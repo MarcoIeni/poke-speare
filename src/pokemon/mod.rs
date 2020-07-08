@@ -27,7 +27,7 @@ impl Pokemon {
             .collect();
         let first_en_flavor_text = en_flavor_text
             .get(0)
-            .ok_or(anyhow!("english description not available"))?;
+            .ok_or_else(|| anyhow!("english description not available"))?;
         let en_description = first_en_flavor_text.flavor_text.clone();
         let cleaned_description = clean_and_make_one_line(&en_description);
         Ok(cleaned_description)
