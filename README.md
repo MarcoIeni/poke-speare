@@ -3,9 +3,8 @@
 REST API that, given a Pokémon name, returns its description in Shakespeare's
 style.
 
-This project combines these APIs:
-- [Shakespeare translator](https://funtranslations.com/api/shakespeare)
-- [PokéAPI](https://pokeapi.co/)
+Pokemon description is taken from [PokéAPI](https://pokeapi.co/) and it is converted
+by using [Shakespeare translator](https://funtranslations.com/api/shakespeare).
 
 ## Usage
 
