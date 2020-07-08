@@ -1,5 +1,8 @@
 # Poke-speare
 
+[![CI](https://github.com/MarcoIeni/poke-speare/workflows/General/badge.svg)](https://github.com/poetry-book/poetry-book-cli/actions)
+[![unsafe forbidden](https://img.shields.io/badge/unsafe-forbidden-success.svg)](https://github.com/rust-secure-code/safety-dance/)
+
 REST API that, given a Pokémon name, returns its description in Shakespeare's
 style.
 
