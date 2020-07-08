@@ -1,0 +1,7 @@
+[package]
+name = "poke-speare"
+version = "0.1.0"
+authors = ["MarcoIeni"]
+edition = "2018"
+
+[dependencies]
