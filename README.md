@@ -7,9 +7,14 @@ This project combines these APIs:
 - [Shakespeare translator](https://funtranslations.com/api/shakespeare)
 - [PokéAPI](https://pokeapi.co/)
 
-## Example
+## Usage
+
+You can use `poke-speare` both as a cli program or as a rust library
+
+### Cli
 
 ```sh
+$ ./poke-speare &
 $ curl http://localhost:5000/pokemon/charizard
 
 {
@@ -18,6 +23,10 @@ $ curl http://localhost:5000/pokemon/charizard
 }
 
 ```
+
+### Library
+
+TODO
 
 ## Install
 
