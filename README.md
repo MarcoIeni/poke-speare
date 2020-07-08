@@ -31,6 +31,10 @@ $ curl http://localhost:5000/pokemon/charizard
 
 TODO
 
+# Ratelimiting
+
+[Shakespeare translator](https://funtranslations.com/api/shakespeare) has a rate limit of 60 API calls a day with distribution of 5 calls an hour.
+
 ## Install
 
 ### Cargo
