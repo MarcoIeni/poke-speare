@@ -34,9 +34,18 @@ impl Pokemon {
     }
 }
 
+fn pokemon_path(pokemon_name: &str) -> String {
+    format!("/api/v2/pokemon-species/{}", pokemon_name)
+}
+
 pub async fn get_description(pokemon_name: &str) -> Result<String> {
-    let request_url = format!("https://pokeapi.co/api/v2/pokemon-species/{}", pokemon_name);
-    let response = reqwest::get(&request_url).await?;
+    let pokemon_path = pokemon_path(pokemon_name);
+    let request_url = format!("https://pokeapi.co{}", pokemon_path);
+    retrieve_description(&request_url).await
+}
+
+async fn retrieve_description(request_url: &str) -> Result<String> {
+    let response = reqwest::get(request_url).await?;
     let pokemon: Pokemon = response.json().await?;
     pokemon.description()
 }
@@ -53,17 +62,35 @@ fn clean_and_make_one_line(descr: &str) -> String {
 mod tests {
     use super::*;
     use crate::test_utils;
-    use std::{fs::File, io::BufReader};
+    use serde_json::Value;
+    use std::fs;
+    use wiremock::{
+        matchers::{method, path},
+        Mock, MockServer, ResponseTemplate,
+    };
 
-    #[test]
-    fn description_is_correctly_parsed_from_json() {
+    #[tokio::test]
+    async fn pokemon_description_is_correctly_retrieved() {
+        let mock_server = MockServer::start().await;
+
         let file_path = test_utils::res_dir().join("charizard.json");
-        let file = File::open(file_path).unwrap();
-        let reader = BufReader::new(file);
 
-        let charizard: Pokemon = serde_json::from_reader(reader).unwrap();
+        let charizard_body = fs::read_to_string(file_path).unwrap();
+        let charizard_body: Value = serde_json::from_str(&charizard_body).unwrap();
+        let response = ResponseTemplate::new(200).set_body_json(charizard_body);
+
+        let charizard_path = pokemon_path("charizard");
+        let request_url = format!("{}{}", &mock_server.uri(), &charizard_path);
+        dbg!(&request_url);
+
+        Mock::given(method("GET"))
+            .and(path(&charizard_path))
+            .respond_with(response)
+            .mount(&mock_server)
+            .await;
+
+        let actual_descr = retrieve_description(&request_url).await.unwrap();
         let expected_descr = "Spits fire that is hot enough to melt boulders. Known to cause forest fires unintentionally.";
-        let actual_descr = charizard.description().unwrap();
         assert_eq!(expected_descr, actual_descr);
     }
 }
