@@ -5,7 +5,7 @@ pub type PSResult<T> = std::result::Result<T, PSError>;
 pub enum PSError {
     /// Pokemon is not recognized by PokeAPI.
     #[error("Pokemon not found")]
-    PokemonNotFound(String),
+    PokemonNotFound,
 
     /// PokeAPI does not have an english description for the given pokemon.
     #[error("No english description found for pokemon")]
