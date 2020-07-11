@@ -118,4 +118,30 @@ mod tests {
             .unwrap();
         assert_eq!(expected_translation, actual_translation);
     }
+
+    #[tokio::test]
+    async fn report_error_if_quota_limits_reached() {
+        let mock_server = MockServer::start().await;
+
+        let shakespeare_response = json!({
+            "error": {
+                "code": 429,
+                "message": "Too Many Requests: Rate limit of 5 requests per hour exceeded. Please wait for 59 minutes and 54 seconds."
+            }
+        });
+        let response = ResponseTemplate::new(429).set_body_json(shakespeare_response);
+
+        let input_text = "Irrelevant. This should not be translated.";
+        let request_url = request_url(&mock_server.uri());
+
+        Mock::given(method("POST"))
+            .and(path(SHAKESPEARE_API_PATH))
+            .respond_with(response)
+            .mount(&mock_server)
+            .await;
+
+        let response = retrieve_translation(&request_url, input_text).await;
+        let expected_err = Err(PSError::QuotaError);
+        assert_eq!(expected_err, response);
+    }
 }
