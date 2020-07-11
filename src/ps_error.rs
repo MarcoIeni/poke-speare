@@ -1,7 +1,7 @@
 pub type PSResult<T> = std::result::Result<T, PSError>;
 
 /// PokeSpeareError. It enumerates all possible errors returned by this library.
-#[derive(thiserror::Error, Debug)]
+#[derive(thiserror::Error, Debug, PartialEq)]
 pub enum PSError {
     /// Pokemon is not recognized by PokeAPI.
     #[error("Pokemon not found")]

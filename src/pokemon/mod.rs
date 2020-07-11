@@ -61,6 +61,7 @@ async fn retrieve_description(request_url: &str) -> PSResult<String> {
             })?;
             pokemon.description()
         }
+        404 => Err(PSError::PokemonNotFound),
         429 => Err(PSError::QuotaError),
         _ => {
             error!(
@@ -92,7 +93,7 @@ mod tests {
     };
 
     #[tokio::test]
-    async fn pokemon_description_is_correctly_retrieved() {
+    async fn pokemon_description_is_retrieved() {
         let mock_server = MockServer::start().await;
 
         let file_path = test_utils::res_dir().join("charizard.json");
@@ -114,5 +115,25 @@ mod tests {
         let actual_descr = retrieve_description(&request_url).await.unwrap();
         let expected_descr = "Spits fire that is hot enough to melt boulders. Known to cause forest fires unintentionally.";
         assert_eq!(expected_descr, actual_descr);
+    }
+
+    #[tokio::test]
+    async fn report_error_if_inexistent_pokemon() {
+        let mock_server = MockServer::start().await;
+        let response = ResponseTemplate::new(404).set_body_string("Not found");
+
+        let inexistent_pokemon_path = pokemon_path("garurumon");
+        let request_url = format!("{}{}", &mock_server.uri(), &inexistent_pokemon_path);
+        dbg!(&request_url);
+
+        Mock::given(method("GET"))
+            .and(path(&inexistent_pokemon_path))
+            .respond_with(response)
+            .mount(&mock_server)
+            .await;
+
+        let response = retrieve_description(&request_url).await;
+        let expected_err = Err(PSError::PokemonNotFound);
+        assert_eq!(expected_err, response);
     }
 }
