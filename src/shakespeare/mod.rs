@@ -1,4 +1,5 @@
-use anyhow::{anyhow, Result};
+use crate::ps_error::{PSError, PSResult};
+use log::error;
 use reqwest::Client;
 use serde::Deserialize;
 
@@ -21,26 +22,49 @@ struct Success {
 }
 
 impl Translation {
-    fn translated_text(&self) -> Result<String> {
+    fn translated_text(&self) -> PSResult<String> {
         match self.success.total {
             1 => Ok(self.contents.translated.clone()),
-            _ => Err(anyhow!("shakespeare translation error")),
+            _ => Err(PSError::ShakespeareError),
         }
     }
 }
 
-pub async fn translate(text: &str) -> Result<String> {
+pub async fn translate(text: &str) -> PSResult<String> {
     let request_url = format!("https://api.funtranslations.com{}", SHAKESPEARE_API_PATH);
     retrieve_translation(&request_url, text).await
 }
 
-async fn retrieve_translation(request_url: &str, text: &str) -> Result<String> {
+async fn retrieve_translation(request_url: &str, text: &str) -> PSResult<String> {
     let params = [("text", text)];
-    let response = Client::new().post(request_url).form(&params).send().await?;
+    let response = Client::new()
+        .post(request_url)
+        .form(&params)
+        .send()
+        .await
+        .map_err(|e| {
+            error!("while making shakespeare request: {}", e);
+            PSError::ShakespeareError
+        })?;
+    let status = response.status();
 
-    let translation: Translation = response.json().await?;
-
-    translation.translated_text()
+    match status.as_u16() {
+        200 => {
+            let translation: Translation = response.json().await.map_err(|e| {
+                error!("while interpreting shakespeare json payload: {}", e);
+                PSError::ShakespeareError
+            })?;
+            translation.translated_text()
+        }
+        429 => Err(PSError::QuotaError),
+        _ => {
+            error!(
+                "shakespeare response: unexpected status code. request_url: {}, text: {}, response: {:#?}",
+                request_url, text, response
+            );
+            Err(PSError::ShakespeareError)
+        }
+    }
 }
 
 #[cfg(test)]

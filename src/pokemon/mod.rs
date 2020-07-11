@@ -1,4 +1,5 @@
-use anyhow::{anyhow, Result};
+use crate::ps_error::{PSError, PSResult};
+use log::error;
 use serde::Deserialize;
 
 #[derive(Deserialize, Debug)]
@@ -19,7 +20,7 @@ struct Language {
 }
 
 impl Pokemon {
-    fn description(&self) -> Result<String> {
+    fn description(&self) -> PSResult<String> {
         let descriptions = &self.flavor_text_entries;
         let en_flavor_text: Vec<&FlavorText> = descriptions
             .iter()
@@ -27,7 +28,7 @@ impl Pokemon {
             .collect();
         let first_en_flavor_text = en_flavor_text
             .get(0)
-            .ok_or_else(|| anyhow!("english description not available"))?;
+            .ok_or(PSError::NoPokemonEnDescription)?;
         let en_description = first_en_flavor_text.flavor_text.clone();
         let cleaned_description = clean_and_make_one_line(&en_description);
         Ok(cleaned_description)
@@ -38,16 +39,37 @@ fn pokemon_path(pokemon_name: &str) -> String {
     format!("/api/v2/pokemon-species/{}", pokemon_name)
 }
 
-pub async fn get_description(pokemon_name: &str) -> Result<String> {
+pub async fn get_description(pokemon_name: &str) -> PSResult<String> {
     let pokemon_path = pokemon_path(pokemon_name);
     let request_url = format!("https://pokeapi.co{}", pokemon_path);
     retrieve_description(&request_url).await
 }
 
-async fn retrieve_description(request_url: &str) -> Result<String> {
-    let response = reqwest::get(request_url).await?;
-    let pokemon: Pokemon = response.json().await?;
-    pokemon.description()
+async fn retrieve_description(request_url: &str) -> PSResult<String> {
+    let response = reqwest::get(request_url).await.map_err(|e| {
+        error!("while making pokeapi request: {}", e);
+        PSError::PokeApiError
+    })?;
+
+    let status = response.status();
+
+    match status.as_u16() {
+        200 => {
+            let pokemon: Pokemon = response.json().await.map_err(|e| {
+                error!("while interpreting shakespeare json payload: {}", e);
+                PSError::PokeApiError
+            })?;
+            pokemon.description()
+        }
+        429 => Err(PSError::QuotaError),
+        _ => {
+            error!(
+                "pokeapi response: unexpected status code. request_url: {}, response: {:#?}",
+                request_url, response
+            );
+            Err(PSError::PokeApiError)
+        }
+    }
 }
 
 fn clean_and_make_one_line(descr: &str) -> String {
