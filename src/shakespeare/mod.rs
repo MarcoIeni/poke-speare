@@ -2,6 +2,7 @@ use crate::ps_error::{PSError, PSResult};
 use log::error;
 use reqwest::Client;
 use serde::Deserialize;
+use std::collections::HashMap;
 
 const SHAKESPEARE_API_PATH: &str = "/translate/shakespeare.json";
 
@@ -30,16 +31,21 @@ impl Translation {
     }
 }
 
+fn request_url(server_uri: &str) -> String {
+    format!("{}{}", server_uri, SHAKESPEARE_API_PATH)
+}
+
 pub async fn translate(text: &str) -> PSResult<String> {
-    let request_url = format!("https://api.funtranslations.com{}", SHAKESPEARE_API_PATH);
+    let request_url = request_url("https://api.funtranslations.com");
     retrieve_translation(&request_url, text).await
 }
 
 async fn retrieve_translation(request_url: &str, text: &str) -> PSResult<String> {
-    let params = [("text", text)];
+    let mut json_param = HashMap::new();
+    json_param.insert("text", text);
     let response = Client::new()
         .post(request_url)
-        .form(&params)
+        .json(&json_param)
         .send()
         .await
         .map_err(|e| {
@@ -72,7 +78,7 @@ mod tests {
     use super::*;
     use serde_json::json;
     use wiremock::{
-        matchers::{method, path},
+        matchers::{body_json, method, path},
         Mock, MockServer, ResponseTemplate,
     };
 
@@ -94,16 +100,18 @@ mod tests {
         let input_text =
             "You gave Mr. Tim a hearty meal, but unfortunately what he ate made him die.";
 
+        let expected_json_body = body_json(json!({ "text": input_text }));
         let response = ResponseTemplate::new(200).set_body_json(shakespeare_response);
 
         Mock::given(method("POST"))
             .and(path(SHAKESPEARE_API_PATH))
+            .and(expected_json_body)
             .respond_with(response)
             .mount(&mock_server)
             .await;
 
         let expected_translation = "Thee did giveth mr. Tim a hearty meal,  but unfortunately what he did doth englut did maketh him kicketh the bucket.";
-        let request_url = format!("{}{}", &mock_server.uri(), SHAKESPEARE_API_PATH);
+        let request_url = request_url(&mock_server.uri());
         dbg!(&request_url);
         let actual_translation = retrieve_translation(&request_url, input_text)
             .await
