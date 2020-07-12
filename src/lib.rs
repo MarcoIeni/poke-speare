@@ -1,3 +1,4 @@
+use log::info;
 pub use ps_error::{PSError, PSResult};
 
 mod pokemon;
@@ -16,7 +17,11 @@ pub async fn get_description(
     pokemon_name: &str,
     shakespeare_api_secret: Option<&str>,
 ) -> PSResult<String> {
+    info!("get description for: {}", pokemon_name);
     let original_description = pokemon::get_description(pokemon_name).await?;
-    println!("original pokemon description: {}", original_description);
+    info!(
+        "original {} description: {}",
+        pokemon_name, original_description
+    );
     shakespeare::translate(&original_description, shakespeare_api_secret).await
 }
