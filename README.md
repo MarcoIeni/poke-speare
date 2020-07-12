@@ -42,11 +42,15 @@ You can set environment variable in order to change settings. For example:
 RUST_LOG=debug POKE_SPEARE_PORT=5001 ./poke-speare
 ```
 
-TODO show all available environment variable
-
-# Ratelimiting
-
-[Shakespeare translator](https://funtranslations.com/api/shakespeare) has a rate limit of 60 API calls a day with distribution of 5 calls an hour.
+In the following there are all environment variables with their default values:
+- `RUST_LOG`: `error`. Other possible values: `info`
+- `POKE_SPEARE_HOST`: `"127.0.0.1"`
+- `POKE_SPEARE_PORT`: `5000`
+- `POKE_SPEARE_SHAKESPEARE_TOKEN`: `""`.
+  [Shakespeare translator](https://funtranslations.com/api/shakespeare)
+  has a rate limit of 60 API calls a day with distribution of 5 calls an hour.
+  Set the environment variable `POKE_SPEARE_SHAKESPEARE_TOKEN` if you have a
+  FunTranslations Api Secret.
 
 ## Install
 
