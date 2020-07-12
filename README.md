@@ -41,7 +41,7 @@ println!("description: {}", pokemon_descr);
 
 You can set environment variable in order to change settings. For example:
 ```
-RUST_LOG=debug POKE_SPEARE_PORT=5001 ./poke-speare
+$ RUST_LOG=debug POKE_SPEARE_PORT=5001 poke-speare
 ```
 
 In the following there are all environment variables with their default values:
@@ -65,10 +65,10 @@ In the following there are all environment variables with their default values:
 ### Docker
 
 ```
-docker pull marcoieni/poke-speare
+$ docker pull marcoieni/poke-speare
 ```
 
-## RUN
+## Run
 
 ### Cargo
 
@@ -80,7 +80,7 @@ $ poke-speare
 
 ### Docker
 ```
-docker run -p 5000:5000 marcoieni/poke-speare
+$ docker run -p 5000:5000 marcoieni/poke-speare
 ```
 
 ## License
