@@ -1,3 +1,5 @@
+#![forbid(unsafe_code)]
+
 use log::info;
 pub use ps_error::{PSError, PSResult};
 

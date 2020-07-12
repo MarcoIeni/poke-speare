@@ -1,3 +1,5 @@
+#![forbid(unsafe_code)]
+
 use actix_web::{get, web, App, HttpResponse, HttpServer, Result};
 use log::info;
 use server::{configuration, pokemon_response};
