@@ -120,7 +120,7 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn report_error_if_quota_limits_reached() {
+    async fn report_error_if_shakespeare_quota_limits_reached() {
         let mock_server = MockServer::start().await;
 
         let shakespeare_response = json!({
