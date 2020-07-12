@@ -12,9 +12,9 @@ by using [Shakespeare translator](https://funtranslations.com/api/shakespeare).
 
 ## Usage
 
-You can use `poke-speare` both as a cli program or as a rust library
+You can use `poke-speare` both as a web server and as a rust library
 
-### Cli
+### Web server
 
 ```sh
 $ ./poke-speare &
