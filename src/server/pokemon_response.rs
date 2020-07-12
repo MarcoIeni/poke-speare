@@ -25,8 +25,8 @@ pub async fn get(
 mod tests {
     use super::*;
     use actix_web::http::StatusCode;
-    use poke_speare::server_error::ServerError;
     use poke_speare::PSError;
+    use poke_speare::{server_error, server_error::ServerError};
 
     fn body_bytes(response: &HttpResponse) -> &[u8] {
         let resp_body = match response.body() {
@@ -69,7 +69,9 @@ mod tests {
         assert_eq!(resp.status(), expected_status_code);
 
         let expected_json = ServerError {
-            error: expected_error.to_string(),
+            error: server_error::Error {
+                message: expected_error.to_string(),
+            },
         };
 
         let body = body_bytes(&resp);

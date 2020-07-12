@@ -6,13 +6,20 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Deserialize, Serialize, PartialEq, Debug)]
 pub struct ServerError {
-    pub error: String,
+    pub error: Error,
+}
+
+#[derive(Deserialize, Serialize, PartialEq, Debug)]
+pub struct Error {
+    pub message: String,
 }
 
 impl ResponseError for PSError {
     fn error_response(&self) -> HttpResponse {
-        let error = self.to_string();
-        ResponseBuilder::new(self.status_code()).json(ServerError { error })
+        let message = self.to_string();
+        ResponseBuilder::new(self.status_code()).json(ServerError {
+            error: Error { message },
+        })
     }
 
     fn status_code(&self) -> StatusCode {
