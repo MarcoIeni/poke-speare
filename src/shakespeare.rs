@@ -85,12 +85,11 @@ mod tests {
     use super::*;
     use serde_json::json;
     use wiremock::{
-        matchers::{body_json, method, path},
+        matchers::{body_json, header, method, path},
         Mock, MockServer, ResponseTemplate,
     };
 
-    #[tokio::test]
-    async fn shakespeare_translation_is_correctly_retrieved() {
+    async fn check_shakespeare_translation(api_secret: Option<&str>) {
         let mock_server = MockServer::start().await;
 
         let shakespeare_response = json!({
@@ -110,8 +109,14 @@ mod tests {
         let expected_json_body = body_json(json!({ "text": input_text }));
         let response = ResponseTemplate::new(200).set_body_json(shakespeare_response);
 
-        Mock::given(method("POST"))
-            .and(path(SHAKESPEARE_API_PATH))
+        let mock = Mock::given(method("POST"));
+
+        let mock = match api_secret {
+            Some(secret) => mock.and(header(FUNTRANSLATIONS_API_SECRET, secret)),
+            None => mock,
+        };
+
+        mock.and(path(SHAKESPEARE_API_PATH))
             .and(expected_json_body)
             .respond_with(response)
             .mount(&mock_server)
@@ -120,10 +125,22 @@ mod tests {
         let expected_translation = "Thee did giveth mr. Tim a hearty meal,  but unfortunately what he did doth englut did maketh him kicketh the bucket.";
         let request_url = request_url(&mock_server.uri());
         dbg!(&request_url);
-        let actual_translation = retrieve_translation(&request_url, input_text, None)
+        let actual_translation = retrieve_translation(&request_url, input_text, api_secret)
             .await
             .unwrap();
         assert_eq!(expected_translation, actual_translation);
+    }
+
+    #[tokio::test]
+    async fn shakespeare_translation_is_correctly_retrieved_with_api_secret() {
+        let api_secret = Some("secret");
+        check_shakespeare_translation(api_secret).await;
+    }
+
+    #[tokio::test]
+    async fn shakespeare_translation_is_correctly_retrieved_without_api_secret() {
+        let api_secret = None;
+        check_shakespeare_translation(api_secret).await;
     }
 
     #[tokio::test]
