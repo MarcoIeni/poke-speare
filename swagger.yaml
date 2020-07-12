@@ -1,0 +1,62 @@
+swagger: "2.0"
+info:
+  description: "Pokemon descriptions by William Shakespeare."
+  version: "0.1.0"
+  title: "Poke Speare"
+host: "127.0.0.1:5000"
+basePath: "/"
+schemes:
+- "http"
+paths:
+  /pokemon/{pokemonName}:
+    get:
+      tags:
+      - "pokemon"
+      summary: "Find pokemon description by name"
+      description: "Returns pokemon description"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "pokemonName"
+        in: "path"
+        description: "pokemon name"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Pokemon"
+        "404":
+          description: "Invalid Pokemon"
+          schema:
+            $ref: "#/definitions/Error"
+        "429":
+          description: "Too many requests, quota limits reached"
+          schema:
+            $ref: "#/definitions/Error"
+   
+definitions:
+  Error:
+    type: "object"
+    properties:
+      error:
+        $ref: "#/definitions/Message"
+  Message:
+    type: "object"
+    properties:
+      message: 
+        type: "string"
+  Pokemon:
+    type: "object"
+    properties:
+      name:
+        type: "string"
+        example: "geodude"
+      description:
+        type: "string"
+        example: "Many liveth on mountain trails and remain half did inurn while keeping an eye on climbers."
+  
+externalDocs:
+  description: "Find out more"
+  url: "https://github.com/MarcoIeni/poke-speare"
