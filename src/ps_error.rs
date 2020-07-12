@@ -8,7 +8,7 @@ pub enum PSError {
     PokemonNotFound,
 
     /// PokeAPI does not have an english description for the given pokemon.
-    #[error("No english description found for pokemon")]
+    #[error("No english description found for this pokemon")]
     NoPokemonEnDescription,
 
     /// Too much requests. Quota limits reached.
