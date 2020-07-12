@@ -61,7 +61,7 @@ mod tests {
     async fn check_error_status_code(
         ps_error: PSError,
         expected_status_code: StatusCode,
-        expected_error: &str,
+        expected_error: server_error::Error,
     ) {
         let pokemon_name = "whatever";
         let pokemon_description = Err(ps_error);
@@ -69,9 +69,7 @@ mod tests {
         assert_eq!(resp.status(), expected_status_code);
 
         let expected_json = ServerError {
-            error: server_error::Error {
-                message: expected_error.to_string(),
-            },
+            error: expected_error,
         };
 
         let body = body_bytes(&resp);
@@ -81,50 +79,75 @@ mod tests {
 
     #[actix_rt::test]
     async fn inexistent_pokemon_returns_404() {
+        let expected_error = server_error::Error {
+            message: "Pokemon not found".to_string(),
+            code: "POKEMON_NOT_FOUND".to_string(),
+        };
+
         check_error_status_code(
             PSError::PokemonNotFound,
             StatusCode::NOT_FOUND,
-            "Pokemon not found",
+            expected_error,
         )
         .await;
     }
 
     #[actix_rt::test]
     async fn inexistent_pokemon_description_returns_404() {
+        let expected_error = server_error::Error {
+            message: "No english description found for this pokemon".to_string(),
+            code: "NO_POKEMON_EN_DESCRIPTION".to_string(),
+        };
+
         check_error_status_code(
             PSError::NoPokemonEnDescription,
             StatusCode::NOT_FOUND,
-            "No english description found for this pokemon",
+            expected_error,
         )
         .await;
     }
 
     #[actix_rt::test]
     async fn pokeapi_error_returns_500() {
+        let expected_error = server_error::Error {
+            message: "PokeAPI error".to_string(),
+            code: "POKEAPI_ERROR".to_string(),
+        };
+
         check_error_status_code(
             PSError::PokeApiError,
             StatusCode::INTERNAL_SERVER_ERROR,
-            "PokeAPI error",
+            expected_error,
         )
         .await;
     }
 
     #[actix_rt::test]
     async fn shakespeare_error_returns_500() {
+        let expected_error = server_error::Error {
+            message: "Shakespeare translator error".to_string(),
+            code: "SHAKESPEARE_ERROR".to_string(),
+        };
+
         check_error_status_code(
             PSError::ShakespeareError,
             StatusCode::INTERNAL_SERVER_ERROR,
-            "Shakespeare translator error",
+            expected_error,
         )
         .await;
     }
 
     #[actix_rt::test]
     async fn quota_error_returns_429() {
+        let expected_error = server_error::Error {
+            message: "Too many requests. Quota limits reached".to_string(),
+            code: "QUOTA_ERROR".to_string(),
+        };
+
         check_error_status_code(
             PSError::QuotaError,
             StatusCode::TOO_MANY_REQUESTS,
-            "Too many requests. Quota limits reached",
+            expected_error,
         )
         .await;
     }
