@@ -17,7 +17,6 @@ You can use `poke-speare` both as a web server and as a rust library
 ### Web server
 
 ```sh
-$ ./poke-speare &
 $ curl http://localhost:5000/pokemon/charizard
 
 {
@@ -62,7 +61,24 @@ In the following there are all environment variables with their default values:
 
 ### Docker
 
-TODO
+```
+docker pull marcoieni/poke-speare
+```
+
+## RUN
+
+### Cargo
+
+Make sure that `~/.cargo/bin` is in your `PATH`.
+
+```
+$ poke-speare
+```
+
+### Docker
+```
+docker run -p 5000:5000 marcoieni/poke-speare
+```
 
 ## License
 
