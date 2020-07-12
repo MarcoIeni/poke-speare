@@ -3,6 +3,7 @@
 [![CI](https://github.com/MarcoIeni/poke-speare/workflows/General/badge.svg)](https://github.com/poetry-book/poetry-book-cli/actions)
 [![Coverage Status](https://coveralls.io/repos/github/MarcoIeni/poke-speare/badge.svg?branch=master)](https://coveralls.io/github/MarcoIeni/poke-speare?branch=master)
 [![unsafe forbidden](https://img.shields.io/badge/unsafe-forbidden-success.svg)](https://github.com/rust-secure-code/safety-dance/)
+[![API docs](http://validator.swagger.io/validator?url=https://raw.githubusercontent.com/MarcoIeni/poke-speare/gh-pages/swagger.yaml)](https://marcoieni.github.io/poke-speare/)
 
 REST API that, given a Pokémon name, returns its description in Shakespeare's
 style.
