@@ -1,6 +1,6 @@
 [package]
 name = "poke-speare"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["MarcoIeni"]
 edition = "2018"
 description = "Pokemon descriptions by William Shakespeare. You know you need it."
