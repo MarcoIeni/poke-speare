@@ -1,8 +1,8 @@
 use actix_web::{get, web, App, HttpResponse, HttpServer, Result};
 use log::info;
+use server::{configuration, pokemon_response};
 
-mod configuration;
-mod pokemon_response;
+mod server;
 
 #[get("/pokemon/{name}")]
 async fn get_pokemon_description(pokemon_name: web::Path<String>) -> Result<HttpResponse> {
