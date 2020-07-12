@@ -1,5 +1,6 @@
 # Poke-speare
 
+[![Crates.io](https://img.shields.io/crates/v/poke-speare.svg)](https://crates.io/crates/poke-speare)
 [![CI](https://github.com/MarcoIeni/poke-speare/workflows/General/badge.svg)](https://github.com/poetry-book/poetry-book-cli/actions)
 [![Coverage Status](https://coveralls.io/repos/github/MarcoIeni/poke-speare/badge.svg?branch=master)](https://coveralls.io/github/MarcoIeni/poke-speare?branch=master)
 [![docker](https://img.shields.io/docker/cloud/build/marcoieni/doc-org.svg)](https://hub.docker.com/r/marcoieni/doc-org/builds)
