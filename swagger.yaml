@@ -47,6 +47,8 @@ definitions:
     properties:
       message: 
         type: "string"
+      code: 
+        type: "string"
   Pokemon:
     type: "object"
     properties:
