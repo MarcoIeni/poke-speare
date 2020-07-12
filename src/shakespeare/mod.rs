@@ -5,6 +5,7 @@ use serde::Deserialize;
 use std::collections::HashMap;
 
 const SHAKESPEARE_API_PATH: &str = "/translate/shakespeare.json";
+const FUNTRANSLATIONS_API_SECRET: &str = "X-Funtranslations-Api-Secret";
 
 #[derive(Deserialize, Debug)]
 struct Translation {
@@ -35,23 +36,29 @@ fn request_url(server_uri: &str) -> String {
     format!("{}{}", server_uri, SHAKESPEARE_API_PATH)
 }
 
-pub async fn translate(text: &str) -> PSResult<String> {
+pub async fn translate(text: &str, shakespeare_api_secret: Option<&str>) -> PSResult<String> {
     let request_url = request_url("https://api.funtranslations.com");
-    retrieve_translation(&request_url, text).await
+    retrieve_translation(&request_url, text, shakespeare_api_secret).await
 }
 
-async fn retrieve_translation(request_url: &str, text: &str) -> PSResult<String> {
+async fn retrieve_translation(
+    request_url: &str,
+    text: &str,
+    shakespeare_api_secret: Option<&str>,
+) -> PSResult<String> {
     let mut json_param = HashMap::new();
     json_param.insert("text", text);
-    let response = Client::new()
-        .post(request_url)
-        .json(&json_param)
-        .send()
-        .await
-        .map_err(|e| {
-            error!("while making shakespeare request: {}", e);
-            PSError::ShakespeareError
-        })?;
+
+    let client = match shakespeare_api_secret {
+        Some(secret) => Client::new()
+            .post(request_url)
+            .header(FUNTRANSLATIONS_API_SECRET, secret),
+        None => Client::new().post(request_url),
+    };
+    let response = client.json(&json_param).send().await.map_err(|e| {
+        error!("while making shakespeare request: {}", e);
+        PSError::ShakespeareError
+    })?;
     let status = response.status();
 
     match status.as_u16() {
@@ -113,7 +120,7 @@ mod tests {
         let expected_translation = "Thee did giveth mr. Tim a hearty meal,  but unfortunately what he did doth englut did maketh him kicketh the bucket.";
         let request_url = request_url(&mock_server.uri());
         dbg!(&request_url);
-        let actual_translation = retrieve_translation(&request_url, input_text)
+        let actual_translation = retrieve_translation(&request_url, input_text, None)
             .await
             .unwrap();
         assert_eq!(expected_translation, actual_translation);
@@ -140,7 +147,7 @@ mod tests {
             .mount(&mock_server)
             .await;
 
-        let response = retrieve_translation(&request_url, input_text).await;
+        let response = retrieve_translation(&request_url, input_text, None).await;
         let expected_err = Err(PSError::QuotaError);
         assert_eq!(expected_err, response);
     }

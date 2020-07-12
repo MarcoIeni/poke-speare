@@ -31,6 +31,15 @@ $ curl http://localhost:5000/pokemon/charizard
 
 TODO
 
+## Settings
+
+You can set environment variable in order to change settings. For example:
+```
+RUST_LOG=debug POKE_SPEARE_PORT=5001 ./poke-speare
+```
+
+TODO show all available environment variable
+
 # Ratelimiting
 
 [Shakespeare translator](https://funtranslations.com/api/shakespeare) has a rate limit of 60 API calls a day with distribution of 5 calls an hour.

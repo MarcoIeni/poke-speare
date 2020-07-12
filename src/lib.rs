@@ -12,8 +12,11 @@ pub mod server_error;
 #[cfg(test)]
 mod test_utils;
 
-pub async fn get_description(pokemon_name: &str) -> PSResult<String> {
+pub async fn get_description(
+    pokemon_name: &str,
+    shakespeare_api_secret: Option<&str>,
+) -> PSResult<String> {
     let original_description = pokemon::get_description(pokemon_name).await?;
     println!("original pokemon description: {}", original_description);
-    shakespeare::translate(&original_description).await
+    shakespeare::translate(&original_description, shakespeare_api_secret).await
 }
