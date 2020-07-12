@@ -3,6 +3,10 @@ name = "poke-speare"
 version = "0.1.0"
 authors = ["MarcoIeni"]
 edition = "2018"
+description = "Pokemon descriptions by William Shakespeare. You know you need it."
+repository = "https://github.com/MarcoIeni/poke-speare"
+license = "MIT OR Apache-2.0"
+readme = "README.md"
 
 [dependencies]
 reqwest = { version = "0.10", features = ["json"] }
