@@ -11,8 +11,8 @@ pub enum PSError {
     #[error("No english description found for this pokemon")]
     NoPokemonEnDescription,
 
-    /// Too much requests. Quota limits reached.
-    #[error("Too much requests. Quota limits reached")]
+    /// Too many requests. Quota limits reached.
+    #[error("Too many requests. Quota limits reached")]
     QuotaError,
 
     /// Shakespeare translator service does not work as expected.

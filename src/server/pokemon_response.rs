@@ -124,7 +124,7 @@ mod tests {
         check_error_status_code(
             PSError::QuotaError,
             StatusCode::TOO_MANY_REQUESTS,
-            "Too much requests. Quota limits reached",
+            "Too many requests. Quota limits reached",
         )
         .await;
     }
