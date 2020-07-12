@@ -29,7 +29,11 @@ $ curl http://localhost:5000/pokemon/charizard
 
 ### Library
 
-TODO
+```rust
+let shakespeare_api_token = None;
+let pokemon_descr = poke_speare::get_description("charizard", shakespeare_api_token).await;
+println!("description: {}", pokemon_descr);
+```
 
 ## Settings
 
