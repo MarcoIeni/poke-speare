@@ -19,10 +19,11 @@ async fn main() -> std::io::Result<()> {
 
     let config = configuration::get();
 
-    let addr = format!("{}:{}", &config.host, &config.port);
-    info!("start server on {}", addr);
+    let host: &str = &config.host;
+    let port = config.port;
+    info!("start server on {}:{}", host, port);
     HttpServer::new(|| App::new().service(get_pokemon_description))
-        .bind(&addr)?
+        .bind((host, port))?
         .run()
         .await
 }
