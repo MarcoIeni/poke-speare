@@ -69,3 +69,8 @@ jobs:
         uses: actions-rs/tarpaulin@v0.1
         with:
           args: '--ignore-tests'
+
+      - name: upload to Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
