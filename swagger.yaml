@@ -49,6 +49,12 @@ definitions:
         type: "string"
       code: 
         type: "string"
+        enum:
+        - POKEMON_NOT_FOUND
+        - NO_POKEMON_EN_DESCRIPTION
+        - QUOTA_ERROR
+        - SHAKESPEARE_ERROR
+        - POKEAPI_ERROR
   Pokemon:
     type: "object"
     properties:
