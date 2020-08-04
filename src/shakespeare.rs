@@ -49,11 +49,11 @@ async fn retrieve_translation(
     let mut json_param = HashMap::new();
     json_param.insert("text", text);
 
+    let post = Client::new().post(request_url);
+
     let client = match shakespeare_api_secret {
-        Some(secret) => Client::new()
-            .post(request_url)
-            .header(FUNTRANSLATIONS_API_SECRET, secret),
-        None => Client::new().post(request_url),
+        Some(secret) => post.header(FUNTRANSLATIONS_API_SECRET, secret),
+        None => post,
     };
     let response = client.json(&json_param).send().await.map_err(|e| {
         error!("while making shakespeare request: {}", e);
