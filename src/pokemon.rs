@@ -22,12 +22,9 @@ struct Language {
 impl Pokemon {
     fn description(&self) -> PSResult<String> {
         let descriptions = &self.flavor_text_entries;
-        let en_flavor_text: Vec<&FlavorText> = descriptions
+        let first_en_flavor_text = descriptions
             .iter()
-            .filter(|d| d.language.name == "en")
-            .collect();
-        let first_en_flavor_text = en_flavor_text
-            .get(0)
+            .find(|d| d.language.name == "en")
             .ok_or(PSError::NoPokemonEnDescription)?;
         let en_description = &first_en_flavor_text.flavor_text;
         let cleaned_description = clean_and_make_one_line(en_description);
