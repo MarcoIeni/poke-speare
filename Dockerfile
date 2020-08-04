@@ -1,4 +1,4 @@
-FROM rust:1.44.1 AS builder
+FROM rust:1.45.2 AS builder
 
 # run as non-root user
 RUN useradd -ms /bin/bash poke
