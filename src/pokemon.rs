@@ -29,8 +29,8 @@ impl Pokemon {
         let first_en_flavor_text = en_flavor_text
             .get(0)
             .ok_or(PSError::NoPokemonEnDescription)?;
-        let en_description = first_en_flavor_text.flavor_text.clone();
-        let cleaned_description = clean_and_make_one_line(&en_description);
+        let en_description = &first_en_flavor_text.flavor_text;
+        let cleaned_description = clean_and_make_one_line(en_description);
         Ok(cleaned_description)
     }
 }
