@@ -1,9 +1,9 @@
 # Poke-speare
 
 [![Crates.io](https://img.shields.io/crates/v/poke-speare.svg)](https://crates.io/crates/poke-speare)
-[![CI](https://github.com/MarcoIeni/poke-speare/workflows/General/badge.svg)](https://github.com/poetry-book/poetry-book-cli/actions)
+[![CI](https://github.com/MarcoIeni/poke-speare/workflows/General/badge.svg)](https://github.com/MarcoIeni/poke-speare/actions)
 [![Coverage Status](https://coveralls.io/repos/github/MarcoIeni/poke-speare/badge.svg?branch=master)](https://coveralls.io/github/MarcoIeni/poke-speare?branch=master)
-[![docker](https://img.shields.io/docker/cloud/build/marcoieni/doc-org.svg)](https://hub.docker.com/r/marcoieni/doc-org/builds)
+[![docker](https://img.shields.io/docker/cloud/build/marcoieni/poke-speare.svg)](https://hub.docker.com/r/marcoieni/poke-speare/builds)
 [![unsafe forbidden](https://img.shields.io/badge/unsafe-forbidden-success.svg)](https://github.com/rust-secure-code/safety-dance/)
 [![API docs](http://validator.swagger.io/validator?url=https://raw.githubusercontent.com/MarcoIeni/poke-speare/gh-pages/swagger.yaml)](https://marcoieni.github.io/poke-speare/)
 
