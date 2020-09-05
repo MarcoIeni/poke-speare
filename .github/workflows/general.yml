@@ -71,6 +71,8 @@ jobs:
           args: '--ignore-tests --out Lcov'
 
       - name: upload to Coveralls
+        # upload only if push on branch master
+        if: ${{ github.event_name == 'push' }}
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
